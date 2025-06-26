@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from langchain_postgres.vectorstores import PGVector
+from langchain_community.vectorstores import PGVector
 from langchain_openai import OpenAIEmbeddings
 
 from config import CONNECTION_STRING, COLLECTION_NAME
