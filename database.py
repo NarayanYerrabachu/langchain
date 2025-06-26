@@ -15,11 +15,13 @@ embeddings = None
 
 if ENABLE_DATABASE:
     try:
-        # Use psycopg2-binary explicitly in the connection string
-        if "psycopg2://" in CONNECTION_STRING:
-            CONNECTION_STRING = CONNECTION_STRING.replace("psycopg2://", "postgresql://")
+        # Fix the connection string to use postgresql instead of postgresql+psycopg2
+        fixed_connection_string = CONNECTION_STRING
+        if "postgresql+psycopg2" in fixed_connection_string:
+            fixed_connection_string = fixed_connection_string.replace("postgresql+psycopg2", "postgresql")
         
-        engine = create_engine(CONNECTION_STRING)
+        logger.info(f"Attempting to connect with: {fixed_connection_string}")
+        engine = create_engine(fixed_connection_string)
         
         # Test connection
         with engine.connect() as conn:
@@ -30,6 +32,7 @@ if ENABLE_DATABASE:
         
     except Exception as e:
         logger.error(f"Failed to initialize database: {str(e)}")
+        logger.info("Continuing with mock implementations")
         # We'll continue with engine=None, which will trigger mock implementations
 else:
     logger.info("Database connection disabled by configuration")
