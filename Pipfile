@@ -14,7 +14,6 @@ pydantic = "*"                 # for request validation
 langchain = "*"
 langchain-community = "*"
 langchain-openai = "*"
-langchain-postgres = "*"
 
 [dev-packages]
 ipython = "*"
