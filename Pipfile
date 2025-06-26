@@ -1,0 +1,25 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+openai = "*"
+psycopg2-binary = "*"          # PostgreSQL driver
+pgvector = "*"                 # Vector type support
+sqlalchemy="*"     # pgvector expects SQLAlchemy 1.x
+pydantic = "*"                 # for request validation
+langchain = "*"
+langchain-community = "*"
+langchain-openai = "*"
+langchain-postgres = "*"
+
+[dev-packages]
+ipython = "*"
+httpx = "*"
+pytest = "*"
+
+[requires]
+python_version = "3.12"
