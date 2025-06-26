@@ -40,10 +40,13 @@ def create_qa_chain(k=5):
     except Exception as e:
         logger.error(f"Failed to create QA chain: {str(e)}")
         
+        # Store the error message to use in the closure
+        error_message = str(e)
+        
         # Return a fallback function that explains the error
         def error_chain(inputs):
             return {
-                "result": f"Error creating QA chain: {str(e)}. Please check your configuration.",
+                "result": f"Error creating QA chain: {error_message}. Please check your configuration.",
                 "source_documents": []
             }
         
