@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+openai
+psycopg2-binary
+pgvector
+sqlalchemy
+pydantic
+langchain
+langchain-community
+langchain-openai
+
+[dev]
+ipython
+httpx
+pytest
