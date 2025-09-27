@@ -4,21 +4,52 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-fastapi = "*"
-uvicorn = "*"
-openai = "*"
-psycopg2-binary = "*"          # PostgreSQL driver
-pgvector = "*"                 # Vector type support
-sqlalchemy="*"     # pgvector expects SQLAlchemy 1.x
-pydantic = "*"                 # for request validation
-langchain = "*"
-langchain-community = "*"
-langchain-openai = "*"
+fastapi = ">=0.104.0"
+uvicorn = {extras = ["standard"], version = ">=0.24.0"}
+openai = ">=1.3.0"
+psycopg2-binary = ">=2.9.0"
+pgvector = ">=0.2.0"
+sqlalchemy = ">=2.0.0"
+pydantic = ">=2.0.0"
+langchain = ">=0.1.0"
+langchain-community = ">=0.0.10"
+langchain-openai = ">=0.0.5"
+
+# Document processing
+pypdf = ">=3.17.0"
+python-docx = ">=1.1.0"
+python-pptx = ">=0.6.23"
+beautifulsoup4 = ">=4.12.0"
+requests = ">=2.31.0"
+selenium = ">=4.15.0"
+unstructured = {extras = ["local-inference"], version = ">=0.11.0"}
+markdown = ">=3.5.0"
+openpyxl = ">=3.1.0"
+
+# File handling
+python-multipart = ">=0.0.6"
+aiofiles = ">=23.2.0"
+
+# Additional utilities
+pandas = ">=2.0.0"
+numpy = ">=1.24.0"
 
 [dev-packages]
 ipython = "*"
 httpx = "*"
 pytest = "*"
+pytest-asyncio = "*"
+black = "*"
+flake8 = "*"
+mypy = "*"
 
 [requires]
 python_version = "3.12"
+
+[scripts]
+start = "uvicorn app:app --reload --host 0.0.0.0 --port 8000"
+prod = "uvicorn app:app --host 0.0.0.0 --port 8000 --workers 4"
+test = "pytest tests/"
+format = "black ."
+lint = "flake8 ."
+type-check = "mypy ."
