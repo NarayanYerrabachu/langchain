@@ -1,6 +1,8 @@
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, HttpUrl
 from enum import Enum
+from datetime import datetime
+
 
 class DocumentType(str, Enum):
     TEXT = "text"
@@ -12,6 +14,7 @@ class DocumentType(str, Enum):
     CSV = "csv"
     EXCEL = "excel"
 
+
 class IngestInput(BaseModel):
     content: Optional[str] = None  # For direct text input
     url: Optional[HttpUrl] = None  # For web URLs
@@ -20,11 +23,13 @@ class IngestInput(BaseModel):
     chunk_size: int = 1000
     chunk_overlap: int = 200
 
+
 class IngestFileInput(BaseModel):
     document_type: DocumentType
     metadata: Dict[str, Any] = {}
     chunk_size: int = 1000
     chunk_overlap: int = 200
+
 
 class QueryInput(BaseModel):
     query: str
@@ -32,11 +37,13 @@ class QueryInput(BaseModel):
     include_metadata: bool = False
     similarity_threshold: Optional[float] = None
 
+
 class IngestResponse(BaseModel):
     status: str
     document_count: int
     document_id: Optional[str] = None
     message: str = ""
+
 
 class QueryResponse(BaseModel):
     answer: str
@@ -44,9 +51,37 @@ class QueryResponse(BaseModel):
     source_count: int
     query_time: Optional[float] = None
 
+
 class DocumentInfo(BaseModel):
     id: str
     content_preview: str
     metadata: Dict[str, Any]
     created_at: str
     document_type: DocumentType
+
+
+# Response models
+class DocsInfo(BaseModel):
+    document_id: str
+    document_type: str
+    filename: Optional[str] = None
+    source: Optional[str] = None
+    chunk_count: int
+    created_at: Optional[datetime] = None
+    file_size: Optional[int] = None
+
+
+class DocumentListResponse(BaseModel):
+    status: str
+    documents: List[DocsInfo]
+    total: int
+    page: int
+    page_size: int
+    message: str
+
+class DocumentDeleteResponse(BaseModel):
+    status: str
+    message: str
+    document_id: str
+    chunks_deleted: int
+    document_found: bool

@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -11,6 +12,30 @@ from config import MAX_FILE_SIZE
 
 # Set up logging
 logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage application lifespan - startup and shutdown events"""
+
+    # Startup
+    logger.info("Starting RAG Document Q&A API v2.0.0")
+
+    try:
+        # Import database module to trigger initialization
+        from database import init_database
+        init_database()
+        logger.info("API startup complete")
+
+    except Exception as e:
+        logger.error(f"Failed to initialize services: {e}")
+        raise  # This will prevent the app from starting
+
+    yield  # Application runs here
+
+    # Shutdown
+    logger.info("Shutting down RAG Document Q&A API")
+
 
 # Create FastAPI application
 app = FastAPI(
@@ -39,6 +64,7 @@ app = FastAPI(
     """,
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Add CORS middleware
@@ -132,26 +158,6 @@ async def general_exception_handler(request: Request, exc: Exception):
 app.include_router(health.router, tags=["Health"])
 app.include_router(documents.router, prefix="/api/v1", tags=["Documents"])
 app.include_router(collections.router, prefix="/api/v1", tags=["Collections"])
-
-
-# Startup event
-@app.on_event("startup")
-async def startup_event():
-    """Initialize services on startup"""
-    logger.info("Starting RAG Document Q&A API v2.0.0")
-
-    # Import database module to trigger initialization
-    from database import init_database
-
-    logger.info("API startup complete")
-
-
-# Shutdown event
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Cleanup on shutdown"""
-    logger.info("Shutting down RAG Document Q&A API")
-
 
 if __name__ == "__main__":
     import uvicorn

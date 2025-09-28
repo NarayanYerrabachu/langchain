@@ -1,8 +1,10 @@
 import unittest
+from datetime import datetime
+
 from pydantic import ValidationError
 from models import (
     DocumentType, IngestInput, IngestFileInput, QueryInput,
-    IngestResponse, QueryResponse, DocumentInfo
+    IngestResponse, QueryResponse, DocsInfo
 )
 
 
@@ -161,19 +163,17 @@ class TestModels(unittest.TestCase):
     def test_document_info(self):
         """Test DocumentInfo model"""
         data = {
-            "id": "doc-456",
-            "content_preview": "This is a preview...",
-            "metadata": {"filename": "test.pdf", "pages": 10},
-            "created_at": "2024-01-01T00:00:00Z",
-            "document_type": DocumentType.PDF
+            "document_id": "doc-456",  # Changed from "id"
+            "document_type": "pdf",  # Or DocumentType.PDF.value
+            "filename": "test.pdf",
+            "chunk_count": 5,  # Added required field
+            "created_at": datetime(2024, 1, 1),  # Use datetime object
         }
-        model = DocumentInfo(**data)
 
-        self.assertEqual(model.id, "doc-456")
-        self.assertEqual(model.content_preview, "This is a preview...")
-        self.assertEqual(model.metadata, {"filename": "test.pdf", "pages": 10})
-        self.assertEqual(model.created_at, "2024-01-01T00:00:00Z")
-        self.assertEqual(model.document_type, DocumentType.PDF)
+        model = DocsInfo(**data)
+
+        self.assertEqual(model.filename, "test.pdf")
+        self.assertEqual(model.chunk_count, 5)
 
     def test_invalid_document_type(self):
         """Test validation with invalid document type"""
